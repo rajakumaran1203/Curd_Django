@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 import requests
+import json
 
 base_url = 'https://hapi.fhir.org/baseR4/CarePlan'
 def get_details(request):
@@ -18,22 +19,30 @@ def get_details(request):
     result = list(zip(data_id,data_type,data_status))
     return render(request, "home.html", {'results':result})
    
-def CreatePageView(request):
+def CreatePageView(request): 
     if request.method == 'POST':
-        data = {'id': request.POST.get('id'), 'resourceType': request.POST.get('resourceType'), 'status': request.POST.get('status')}
-        headers = {'Content-Type': 'application/json'}
-        print(data)
-        response = requests.post(base_url+'/resource', json=data, headers=headers)
-        print(response)
-    return render(request , 'create_data.html')
+        #ids = request.POST.get('id')
+        resourceTypes = request.POST.get('resourceType')
+        #statuss = request.POST.get('status')
+        payload = {"entry": [{"resource": {"resourceType": resourceTypes}}]}
+        response = requests.post(base_url, data=payload)
+        if response.status_code == 201:
+            return redirect('get_details')
+    return render(request, 'create_data.html')
 
  
 def EditPageView(request):
-    return render(request , "edit_data.html")
+    response = requests.get('https://hapi.fhir.org/baseR4/CarePlan/{id}')
+    data = response.json()  
+    if request.method == 'POST':
+        updated_data = {'name': request.POST.get('id'), 'resourceType': request.POST.get('resourceType'), 'status': request.POST.get('status')}
+        response = requests.put(f'https://hapi.fhir.org/baseR4/CarePlan/{id}', data=updated_data)
+        return redirect('display_data')
+    context = {'data': data}
+    return render(request, "edit_data.html", context)
  
         
 def DeletePageView(request, id):
     response =requests.delete(f'https://hapi.fhir.org/baseR4/CarePlan/{id}')
-    print(response)
-    return render(request)
+    return render(request, "delete_data.html")
 

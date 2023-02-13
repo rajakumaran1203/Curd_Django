@@ -1,1 +1,37 @@
 {% extends 'base.html' %}
+{%block content%}
+<html>
+
+<head>
+    <title>Create</title>
+</head>
+
+<body>
+    <div class="container">
+        <table>
+            <tbody>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <tr>
+                        <td> ID</td>
+                        <td><input type="text" name="id" required></td>
+                    </tr>
+                    <tr>
+                        <td> resourceType</td>
+                        <td><input type="text" name="resourceType" required></td>
+                    </tr>
+                    <tr>
+                        <td> Status</td>
+                        <td><input type="text" name="status" required></td>
+                    </tr>
+                    <tr>
+                        <td><button>Submit</button></td>
+                    </tr>
+                </form>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
+{% endblock content %}
