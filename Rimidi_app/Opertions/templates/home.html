@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1>Careplan Status</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">ResourceType</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in results %}
+        <tr>
+            <td>{{item.0}}</td>
+            <td>{{item.1}}</td>
+            <td>{{item.2}}</td>
+            <td>
+                <a href="{% url 'edit_data'  %}" class='btn btn-outline-primary btn-sm'>Edit</a> |
+                <a href="{% url 'delete_data' %}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'create_data'  %}" class='btn btn-outline-success btn-sm'>Create New +</a>
+
+{% endblock content %}

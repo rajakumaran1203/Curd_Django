@@ -1,0 +1,58 @@
+<table>
+    <tr>
+        <th>resourceType</th>
+        <th>ID</th>
+        <th>meta</th>
+        <th>text</th>
+        <th>status</th>
+        <th>intent</th>
+        <th>category</th>
+        <th>subject</th>
+        <th>encounter</th>
+        <th>period</th>
+        <th>careTeam</th>
+        <th>activity</th>
+    </tr>
+    {% for item in data %}
+    <tr>
+        <td>{{ item.resourceType }}</td>
+        <td>{{ item.id }}</td>
+        <td>{{ item.meta }}</td>
+        <td>{{ item.text }}</td>
+        <td>{{ item.status }}</td>
+        <td>{{ item.intent }}</td>
+        <td>{{ item.category }}</td>
+        <td>{{ item.subject }}</td>
+        <td>{{ item.encounter }}</td>
+        <td>{{ item.period }}</td>
+        <td>{{ item.careTeam }}</td>
+        <td>{{ item.activity }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- display_data.html -->
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.description }}</td>
+            <td>
+                <a href="{% url 'update_data' item.id %}">Update</a>
+                <a href="{% url 'delete_data' item.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'create_data' %}">Create</a>
