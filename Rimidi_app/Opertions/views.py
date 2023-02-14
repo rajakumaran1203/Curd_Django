@@ -21,13 +21,17 @@ def get_details(request):
    
 def CreatePageView(request): 
     if request.method == 'POST':
-        #ids = request.POST.get('id')
         resourceTypes = request.POST.get('resourceType')
-        #statuss = request.POST.get('status')
-        payload = {"entry": [{"resource": {"resourceType": resourceTypes}}]}
-        response = requests.post(base_url, data=payload)
+        payload =  {"resourceType": resourceTypes}
+        care_plan_json = json.dumps(payload)
+        headers = {"Content-Type": "application/fhir+json"}
+        response = requests.post(base_url, headers=headers, data=care_plan_json)
+        temp_data = response.json()
+        print(temp_data)
         if response.status_code == 201:
-            return redirect('get_details')
+            print("CarePlan resource created successfully")
+        else:
+            print("Error creating CarePlan resource: ", response.text)
     return render(request, 'create_data.html')
 
  
@@ -35,8 +39,9 @@ def EditPageView(request):
     response = requests.get('https://hapi.fhir.org/baseR4/CarePlan/{id}')
     data = response.json()  
     if request.method == 'POST':
-        updated_data = {'name': request.POST.get('id'), 'resourceType': request.POST.get('resourceType'), 'status': request.POST.get('status')}
-        response = requests.put(f'https://hapi.fhir.org/baseR4/CarePlan/{id}', data=updated_data)
+        updated_data = {'resourceType': request.POST.get('resourceType')}
+        headers = {"Content-Type": "application/fhir+json"}
+        response = requests.put(f'https://hapi.fhir.org/baseR4/CarePlan/{id}',headers=headers, data=updated_data)
         return redirect('display_data')
     context = {'data': data}
     return render(request, "edit_data.html", context)
