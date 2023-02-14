@@ -36,18 +36,29 @@ def CreatePageView(request):
 
  
 def EditPageView(request):
-    response = requests.get('https://hapi.fhir.org/baseR4/CarePlan/{id}')
-    data = response.json()  
     if request.method == 'POST':
-        updated_data = {'resourceType': request.POST.get('resourceType')}
+        id = request.POST.get('id')
+        updated_data = {'resourceType': request.POST.get('resourceType'), 'id':id}
         headers = {"Content-Type": "application/fhir+json"}
-        response = requests.put(f'https://hapi.fhir.org/baseR4/CarePlan/{id}',headers=headers, data=updated_data)
-        return redirect('display_data')
-    context = {'data': data}
-    return render(request, "edit_data.html", context)
- 
-        
-def DeletePageView(request, id):
-    response =requests.delete(f'https://hapi.fhir.org/baseR4/CarePlan/{id}')
+        print(updated_data)
+        care_plan_json = json.dumps(updated_data)
+        response = requests.put(base_url + "/" + str(id), headers=headers, data=care_plan_json)
+        temp_data = response.json()
+        print(temp_data)
+        if response.status_code == 200:
+            print("CarePlan resource created successfully")
+        else:
+            print("Error creating CarePlan resource: ")
+    return render(request, "edit_data.html")
+         
+def DeletePageView(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        response =requests.delete(base_url + "/" + str(id))
+        temp_data = response.json()
+        print(temp_data)  
+        if response.status_code == 204:
+            print('Resource deleted successfully.')
+        else:
+            print('Error deleting resource: ', response.status_code, response.reason)      
     return render(request, "delete_data.html")
-

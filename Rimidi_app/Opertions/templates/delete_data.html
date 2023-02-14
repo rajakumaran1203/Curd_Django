@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
-<h1>Book Delete</h1>
-<form method="post">{% csrf_token %}
-    Are you sure you want to delete "{{id}}" ?
-    <input type="submit" value="Submit" />
-</form>
+{%block content%}
+<html>
+<head>
+    <title>update</title>
+</head>
+<body>
+    <div class="container">
+        <table>
+            <tbody>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <tr>
+                        <td> ID</td>
+                        <td><input type="text" name="id" required></td>
+                    </tr>
+                    <tr>
+                        <td><button>Submit</button></td>
+                    </tr>
+                </form>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
+{% endblock content %}
