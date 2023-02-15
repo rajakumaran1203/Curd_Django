@@ -4,20 +4,22 @@ import json
 
 base_url = 'https://hapi.fhir.org/baseR4/CarePlan'
 def get_details(request):
-    response = requests.get(base_url)
-    data = response.json()
-    data_entry=[]
-    data_id = []
-    data_type = []
-    data_status = []
-    for item in data['entry']:
-        data_entry.append(item)
-    for item in data_entry:
-        data_id.append(item['resource']['id'])
-        data_type.append(item['resource']['resourceType'])
-        data_status.append(item['resource']['status'])
-    result = list(zip(data_id,data_type,data_status))
-    return render(request, "home.html", {'results':result})
+    context = {}
+    if request.method == 'POST':
+        resourcetype = request.POST.get('my_dropdown')
+        print(resourcetype)
+        url = f'https://hapi.fhir.org/baseR4/{resourcetype}'
+        response = requests.get(url)
+        data = response.json()
+        resources = []
+        for resource in data['entry']:
+            resources.append({
+                'id': resource['resource']['id'],
+                'resourceType': resource['resource']['resourceType'],
+                'status': resource['resource']['status']
+            })
+        context['resources'] = resources
+    return render(request, 'home.html', context)
    
 def CreatePageView(request): 
     if request.method == 'POST':
@@ -62,3 +64,4 @@ def DeletePageView(request):
         else:
             print('Error deleting resource: ', response.status_code, response.reason)      
     return render(request, "delete_data.html")
+    
